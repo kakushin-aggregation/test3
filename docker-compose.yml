@@ -1,0 +1,30 @@
+#docker-compose.ymlの記述方法のバージョン指定
+version: '3'
+
+#作成するコンテナ
+services:
+  #webコンテナ
+  web:
+    container_name: django
+    #指定したディレクトリ内のdockerfileからコンテナを作成
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #コンテナ内で実行するコマンド
+    command: 
+      #ローカルホスト:4000のサーバを起動
+      python3 manage.py runserver 0.0.0.0:4000
+    #ホストのディレクトリをコンテナ内の指定したディレクトリと連動（マウント）
+    volumes:
+      #ホストのプロジェクトフォルダとコンテナ内の/codeを同期させる
+      - ./django:/code
+    #ホスト側のポートをコンテナ側の指定のポートに繋ぐ
+    ports:
+      #ローカルホスト4000にアクセスすると、コンテナ内の4000ポートに繋がる
+      - "4000:4000"
+    # logging:
+      # driver: awslogs
+      # options:
+        # awslogs-region: ap-northeast-1
+        # awslogs-group: /ecs/archi-inspection/api
+        # awslogs-stream-prefix: ecs
